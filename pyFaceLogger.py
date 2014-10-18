@@ -51,19 +51,18 @@ if __name__ == "__main__":
     # You'll need at least a path to your image data, please see
     # the tutorial coming with this source code on how to prepare
     # your image data:
-    if len(sys.argv) < 2:
-        print "USAGE: facerec_demo.py </path/to/images> [</path/to/store/images/at>]"
+    if len(sys.argv) < 3:
+        print "USAGE: facerec_demo.py </path/to/images> sampleImage"
         sys.exit()
     # Now read in the image data. This must be a valid path!
     [X,y] = read_images(sys.argv[1])
+    sampleImagePath=sys.argv[2]
     # Convert labels to 32bit integers. This is a workaround for 64bit machines,
     # because the labels will truncated else. This will be fixed in code as
     # soon as possible, so Python users don't need to know about this.
     # Thanks to Leo Dirac for reporting:
     y = np.asarray(y, dtype=np.int32)
     # If a out_dir is given, set it:
-    if len(sys.argv) == 3:
-        out_dir = sys.argv[2]
     # Create the Eigenfaces model. We are going to use the default
     # parameters for this simple example, please read the documentation
     # for thresholding:
@@ -83,13 +82,7 @@ if __name__ == "__main__":
     # model.predict is going to return the predicted label and
     # the associated confidence:
     
-    #Z= []
-    im = cv2.imread('/Users/eshelepov/Downloads/7.pgm', cv2.IMREAD_GRAYSCALE)
-    #
-    #testImage = cv2.imread('/Users/eshelepov/Downloads/10.pgm', cv2.IMREAD_GRAYSCALE)
-    #Z.append(np.asarray(testImage, dtype=np.uint8))
-    
-
+    im = cv2.imread(sampleImagePath, cv2.IMREAD_GRAYSCALE)
     [p_label, p_confidence] = model.predict(im)
     
     #np.asarray(testImage, dtype=np.uint8)
@@ -100,38 +93,4 @@ if __name__ == "__main__":
     cv2.imshow('sample',im);
     cv2.imshow('guess',X[p_label*10])
     cv2.waitKey(0)
-    # Cool! Finally we'll plot the Eigenfaces, because that's
-    # what most people read in the papers are keen to see.
-    #
-    # Just like in C++ you have access to all model internal
-    # data, because the cv::FaceRecognizer is a cv::Algorithm.
-    #
-    # You can see the available parameters with getParams():
-    
 
-    # print model.getParams()
-    # # Now let's get some data:
-    # mean = model.getMat("mean")
-    # eigenvectors = model.getMat("eigenvectors")
-    # # We'll save the mean, by first normalizing it:
-    # mean_norm = normalize(mean, 0, 255, dtype=np.uint8)
-    # mean_resized = mean_norm.reshape(X[0].shape)
-    # if out_dir is None:
-    #     cv2.imshow("mean", mean_resized)
-    # else:
-    #     cv2.imwrite("%s/mean.png" % (out_dir), mean_resized)
-    # # Turn the first (at most) 16 eigenvectors into grayscale
-    # # images. You could also use cv::normalize here, but sticking
-    # # to NumPy is much easier for now.
-    # # Note: eigenvectors are stored by column:
-    # for i in xrange(min(len(X), 16)):
-    #     eigenvector_i = eigenvectors[:,i].reshape(X[0].shape)
-    #     eigenvector_i_norm = normalize(eigenvector_i, 0, 255, dtype=np.uint8)
-    #     # Show or save the images:
-    #     if out_dir is None:
-    #         cv2.imshow("%s/eigenface_%d" % (out_dir,i), eigenvector_i_norm)
-    #     else:
-    #         cv2.imwrite("%s/eigenface_%d.png" % (out_dir,i), eigenvector_i_norm)
-    # Show the images:
-    # if out_dir is None:
-    #     cv2.waitKey(0)
